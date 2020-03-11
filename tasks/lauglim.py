@@ -170,15 +170,6 @@ class parseSess:
         assert(isChoiceBaited[Rewarded].all()), "Impossible trials found: unbaited AND rewarded."
         # waitingTime[isChoiceBaited] = np.nan
 
-        self.parsedData = pd.DataFrame({'iTrial': np.arange(nTrials),'iBlock': iBlock,
-                                        'isChoiceLeft': ChoiceLeft, 'isChoiceRight': ChoiceRight, 'isChoiceMiss': ChoiceMiss,'isLeftHi': isLeftHi,
-                                        'isRewarded': Rewarded, 'isBrokeFix': FixBroke, 'isEarlyWithdr': EarlyWithdrawal, 'isBaitLeft':isBaitLeft, 'isBaitRight':isBaitRight, 'isChoiceBaited':isChoiceBaited,
-                                        'stateTraj': stateTraj,'reactionTime':reactionTime, 'movementTime':movementTime, 'waitingTime': waitingTime, 'StimDelay': stimDelay, 'FeedbackDelay': feedbackDelay,
-                                        'tsCin': tsCin, 'tsChoice': tsChoice, 'tsRwd': tsRwd,
-                                        'tsPokeL': tsPokeL, 'tsPokeC': tsPokeC, 'tsPokeR': tsPokeR, 'tsState0': tsState0})
-
-        self.parsedData = self.parsedData.set_index('iTrial')
-
         if not 'pLo' in self.params.index:
             warnings.warn('No params file. Estimating reward probabilities from data.')
             isLeftHi = self.parsedData.isLeftHi
@@ -206,8 +197,22 @@ class parseSess:
             # ndxLo = np.logical_and(ndx,np.logical_not(ndxHi))
             # self.params.loc['pLo'] = self.parsedData.isRewarded.loc[ndxLo].sum()/np.logical_not(self.parsedData.isEarlyWithdr.loc[ndxLo]).sum()
 
-        self.parsedData.loc[:,'pLo'] = self.params.loc['pLo']
-        self.parsedData.loc[:,'pHi'] = self.params.loc['pHi']
+        probabilityLo = self.params.loc['pLo']
+        probabilityHi = self.params.loc['pHi']
+        
+        bpodDf = {'iBlock': iBlock,'isChoiceLeft': ChoiceLeft, 'isChoiceRight': ChoiceRight, \
+                  'isChoiceMiss': ChoiceMiss,'isLeftHi': isLeftHi,\
+                  'isRewarded': Rewarded, 'isBrokeFix': FixBroke, 'isEarlyWithdr': EarlyWithdrawal, \
+                  'isBaitLeft':isBaitLeft, 'isBaitRight':isBaitRight, 'isChoiceBaited':isChoiceBaited,\     
+                  'stateTraj': stateTraj,'reactionTime':reactionTime, 'movementTime':movementTime, \
+                  'waitingTime': waitingTime, 'StimDelay': stimDelay, 'FeedbackDelay': feedbackDelay,\
+                  'tsCin': tsCin, 'tsChoice': tsChoice, 'tsRwd': tsRwd,\
+                  'tsPokeL': tsPokeL, 'tsPokeC': tsPokeC, 'tsPokeR': tsPokeR, 'tsState0': tsState0\
+                  'pHi':probabilityHi, 'pLo':probabilityLo}
+        
+        self.parsedData=pd.DataFrame(index=np.arange(nTrials), data=bpodDf)
+        self.parsedData.index.name='iTrial'
+
 
         # self.pred_lauglim()
         # self.pred_idobs()
