@@ -200,14 +200,14 @@ class parseSess:
         probabilityLo = self.params.loc['pLo']
         probabilityHi = self.params.loc['pHi']
         
-        bpodDf = {'iBlock': iBlock,'isChoiceLeft': ChoiceLeft, 'isChoiceRight': ChoiceRight, \
-                  'isChoiceMiss': ChoiceMiss,'isLeftHi': isLeftHi,\
-                  'isRewarded': Rewarded, 'isBrokeFix': FixBroke, 'isEarlyWithdr': EarlyWithdrawal, \
-                  'isBaitLeft':isBaitLeft, 'isBaitRight':isBaitRight, 'isChoiceBaited':isChoiceBaited,\     
-                  'stateTraj': stateTraj,'reactionTime':reactionTime, 'movementTime':movementTime, \
-                  'waitingTime': waitingTime, 'StimDelay': stimDelay, 'FeedbackDelay': feedbackDelay,\
-                  'tsCin': tsCin, 'tsChoice': tsChoice, 'tsRwd': tsRwd,\
-                  'tsPokeL': tsPokeL, 'tsPokeC': tsPokeC, 'tsPokeR': tsPokeR, 'tsState0': tsState0\
+        bpodDf = {'iBlock': iBlock,'isChoiceLeft': ChoiceLeft, 'isChoiceRight': ChoiceRight,
+                  'isChoiceMiss': ChoiceMiss,'isLeftHi': isLeftHi,
+                  'isRewarded': Rewarded, 'isBrokeFix': FixBroke, 'isEarlyWithdr': EarlyWithdrawal,
+                  'isBaitLeft':isBaitLeft, 'isBaitRight':isBaitRight, 'isChoiceBaited':isChoiceBaited,  
+                  'stateTraj': stateTraj,'reactionTime':reactionTime, 'movementTime':movementTime,
+                  'waitingTime': waitingTime, 'StimDelay': stimDelay, 'FeedbackDelay': feedbackDelay,
+                  'tsCin': tsCin, 'tsChoice': tsChoice, 'tsRwd': tsRwd,
+                  'tsPokeL': tsPokeL, 'tsPokeC': tsPokeC, 'tsPokeR': tsPokeR, 'tsState0': tsState0,
                   'pHi':probabilityHi, 'pLo':probabilityLo}
         
         self.parsedData=pd.DataFrame(index=np.arange(nTrials), data=bpodDf)
