@@ -172,20 +172,28 @@ class parseSess:
 
         if not 'pLo' in self.params.index:
             warnings.warn('No params file. Estimating reward probabilities from data.')
-            isLeftHi = self.parsedData.isLeftHi
-            ndxPrevRwdL = np.hstack((False,np.logical_and(self.parsedData.isRewarded.iloc,self.parsedData.isChoiceLeft)[:-1])).astype(bool)
-            ndxPrevRwdR = np.hstack((False,np.logical_and(self.parsedData.isRewarded.iloc,self.parsedData.isChoiceRight)[:-1])).astype(bool)
+            #isLeftHi = self.parsedData.isLeftHi
+            #ndxPrevRwdL = np.hstack((False,np.logical_and(self.parsedData.isRewarded.iloc,self.parsedData.isChoiceLeft)[:-1])).astype(bool)
+            #ndxPrevRwdR = np.hstack((False,np.logical_and(self.parsedData.isRewarded.iloc,self.parsedData.isChoiceRight)[:-1])).astype(bool)
+            #
+            # TO to check: 
+            #np.logical_and(parsedData.isRewarded.iloc,parsedData.isChoiceLeft)[8] = True 
+            #but, parsedData.isChoiceLeft[8] = True and parsedData.isRewarded[8] = False?
+            #sessionTest='/Users/suelynnren/Documents/tasksuite_nb/resources/datasets/matching_fix/TG021/TG021_Matching_Aug23_2018_Session1.mat'
 
-            baitHi = np.full(self.parsedData.isRewarded.shape,np.nan)
-            baitHi[np.logical_and(isLeftHi,ndxPrevRwdL)] = self.parsedData.isBaitLeft.loc[np.logical_and(isLeftHi,ndxPrevRwdL)]
-            baitHi[np.logical_and(np.logical_not(isLeftHi),ndxPrevRwdR)] = self.parsedData.isBaitRight.loc[np.logical_and(np.logical_not(isLeftHi),ndxPrevRwdR)]
+            ndxPrevRwdL = np.hstack((False,(Rewarded & ChoiceLeft)[:-1]))
+            ndxPrevRwdR = np.hstack((False,(Rewarded & ChoiceRight)[:-1]))
 
-            baitLo = np.full(self.parsedData.isRewarded.shape,np.nan)
-            baitLo[np.logical_and(isLeftHi,ndxPrevRwdR)] = self.parsedData.isBaitRight.loc[np.logical_and(isLeftHi,ndxPrevRwdR)]
-            baitLo[np.logical_and(np.logical_not(isLeftHi),ndxPrevRwdL)] = self.parsedData.isBaitLeft.loc[np.logical_and(np.logical_not(isLeftHi),ndxPrevRwdL)]
+            baitHi = np.full(Rewarded.shape,np.nan)
+            baitHi[np.logical_and(isLeftHi,ndxPrevRwdL)] = isBaitLeft[np.logical_and(isLeftHi,ndxPrevRwdL)]
+            baitHi[np.logical_and(~isLeftHi,ndxPrevRwdR)] = isBaitRight[np.logical_and(~isLeftHi,ndxPrevRwdR)]
 
+            baitLo = np.full(Rewarded.shape,np.nan)
+            baitLo[np.logical_and(isLeftHi,ndxPrevRwdR)] = isBaitRight[np.logical_and(isLeftHi,ndxPrevRwdR)]
+            baitLo[np.logical_and(~isLeftHi,ndxPrevRwdL)] = isBaitLeft[np.logical_and(~isLeftHi,ndxPrevRwdL)]
+            
             self.params.loc['pHi'] = np.nanmean(baitHi)*100
-            self.params.loc['pLo'] = pLo = np.nanmean(baitLo)*100
+            self.params.loc['pLo'] = np.nanmean(baitLo)*100
 
             # ndx = np.logical_or(self.parsedData.isChoiceLeft,self.parsedData.isChoiceRight)
             # ndx = np.logical_and(ndx,np.hstack((False,self.parsedData.isRewarded.iloc[:-1])))
